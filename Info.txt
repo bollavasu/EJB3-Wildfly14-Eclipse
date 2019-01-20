@@ -1,0 +1,49 @@
+
+https://www.youtube.com/watch?v=ZftdxHnqEXU
+
+1)Create a EJB Project
+  New -> EJB Project -> give project name -> Finish
+  
+2)Create a Dynamic Web Project
+  New -> Dynamic Web Project -> give project name -> Finish
+  
+3)Create a Enterprise Application Project
+  New -> Enterprise Application Project -> give project name -> Next -> Select both EJB and Dynamic Web Project -> Finish
+  
+4)Create a Stateless Session Bean in EJB Project  (No-inerface View : we don't have any interface, Only Bean class exists)
+  ejbModule -> New -> Session Bean -> give package name and Class name (No-inerface View is already checked, don't check anyting (Remote, Local, Asynchronous))
+  
+	@Stateless
+	@LocalBean
+	public class CustomerBean {
+
+	   public String sayHello(String name) {
+		   System.out.println("FROM CustomerBean sayHello()");
+		   return "HELLO " +  name + ", HOW ARE YOU ?";
+	   }
+	}
+
+5)Create a Servlet in Dynamic Web Project
+  src -> New -> Servlet -> give package name and Class name -> Finish
+  
+	@WebServlet("/ClientServlet")
+	public class ClientServlet extends HttpServlet {
+		
+		private static final long serialVersionUID = 1L;
+		
+		//Fix project setup -> Add project 'EjbProject' to build path of 'WebProject'
+		@EJB
+		CustomerBean customerBean;
+		
+		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			System.out.println("FROM ClientServlet doGet()");
+			PrintWriter out = response.getWriter();
+			out.println(customerBean.sayHello("VASU"));
+		}
+
+	}
+	
+6)run the Enterprise Application Project on Wildfly
+  Enterprise Application Project -> Run As -> Run on Server
+  
+7)http://localhost:8080/WebProject/ClientServlet
